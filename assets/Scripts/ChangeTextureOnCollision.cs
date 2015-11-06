@@ -9,7 +9,7 @@ public class ChangeTextureOnCollision : MonoBehaviour {
     public Texture newTexture;
     public bool hasBeenChanged = false;
     public Logger logger;
-
+    private bool changeLatch = false;
 	// Use this for initialization
 	void Start () {
 	    if(rendererToChange != null)
@@ -18,7 +18,7 @@ public class ChangeTextureOnCollision : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (!colliderToMonitor.enabled && !hasBeenChanged)
+        if (changeLatch && !hasBeenChanged)
         {
             rendererToChange.material.mainTexture = newTexture;
             hasBeenChanged = true;
@@ -27,6 +27,12 @@ public class ChangeTextureOnCollision : MonoBehaviour {
                 logger.pushEventLogToSummary("ChangeTextureEvent_ObjectClicked," + name, true);
                 logger.pushEventLogToRaw("ChangeTextureEvent_ObjectClicked," + name, true);
             }
+            changeLatch = false;
         }
 	}
+
+    public void Change()
+    {
+        changeLatch = true;
+    }
 }

@@ -14,7 +14,8 @@ public class XInputTestCS : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        // No need to initialize anything for the plugin
+        lookCamera.transform.localRotation = Quaternion.identity;
+        UnityEngine.VR.InputTracking.Recenter();
     }
 
     // Update is called once per frame
@@ -44,6 +45,10 @@ public class XInputTestCS : MonoBehaviour
         if (prevState.Buttons.A == ButtonState.Released && state.Buttons.A == ButtonState.Pressed)
         {
             renderObj.GetComponent<Renderer>().material.color = new Color(Random.value, Random.value, Random.value, 1.0f);
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2f, Screen.height / 2f));
+            if (Physics.Raycast(ray, out hit, 2f))
+                hit.collider.gameObject.GetComponent<ChangeTextureOnCollision>().Change();
         }
         // Detect if a button was released this frame
         if (prevState.Buttons.A == ButtonState.Pressed && state.Buttons.A == ButtonState.Released)

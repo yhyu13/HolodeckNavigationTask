@@ -348,7 +348,7 @@ private function ApplyInputVelocityChange (velocity : Vector3) {
 		// Find the input movement direction projected onto the sliding direction
 		var projectedMoveDir = Vector3.Project(inputMoveDirection, desiredVelocity);
 		// Add the sliding direction, the spped control, and the sideways control vectors
-		desiredVelocity = desiredVelocity + projectedMoveDir * sliding.speedControl + (inputMoveDirection - projectedMoveDir) ;//* sliding.sidewaysControl;
+		desiredVelocity = desiredVelocity + projectedMoveDir * sliding.speedControl + (inputMoveDirection - projectedMoveDir) * sliding.sidewaysControl;
 		// Multiply with the sliding speed
 		desiredVelocity *= sliding.slidingSpeed;
 	}
@@ -568,9 +568,9 @@ function MaxSpeedInDirection (desiredMovementDirection : Vector3) : float {
 	if (desiredMovementDirection == Vector3.zero)
 		return 0;
 	else {
-	    var zAxisEllipseMultiplier : float = (desiredMovementDirection.z > 0 ? movement.maxForwardSpeed : movement.maxBackwardsSpeed) ;/// movement.maxSidewaysSpeed;
+		var zAxisEllipseMultiplier : float = (desiredMovementDirection.z > 0 ? movement.maxForwardSpeed : movement.maxBackwardsSpeed) / movement.maxSidewaysSpeed;
 		var temp : Vector3 = new Vector3(desiredMovementDirection.x, 0, desiredMovementDirection.z / zAxisEllipseMultiplier).normalized;
-		var length : float = new Vector3(temp.x, 0, temp.z * zAxisEllipseMultiplier).magnitude ;//* movement.maxSidewaysSpeed;
+		var length : float = new Vector3(temp.x, 0, temp.z * zAxisEllipseMultiplier).magnitude * movement.maxSidewaysSpeed;
 		return length;
 	}
 }

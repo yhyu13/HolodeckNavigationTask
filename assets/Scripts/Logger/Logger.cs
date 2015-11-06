@@ -21,7 +21,6 @@ public class Logger : MonoBehaviour {
 	string previousTickOutput = "";
 	private bool paused = false;
     public bool beginAutomatically = false;
-    public string titleString;
 
 	public void Pause(){
 		paused = true;
@@ -102,7 +101,6 @@ public class Logger : MonoBehaviour {
 
 		//Create the file writer
 		summaryWriter = new StreamWriter (summaryFilename);
-        summaryWriter.WriteLine(titleString);
         summaryWriter.WriteLine("Time,Event,Object");
 	}
 
