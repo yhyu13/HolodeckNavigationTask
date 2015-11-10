@@ -10,6 +10,7 @@ public class ChangeTextureOnCollision : MonoBehaviour {
     public bool hasBeenChanged = false;
     public Logger logger;
     private bool changeLatch = false;
+    public bool disableColliderOnChange = true;
 	// Use this for initialization
 	void Start () {
 	    if(rendererToChange != null)
@@ -22,6 +23,8 @@ public class ChangeTextureOnCollision : MonoBehaviour {
         {
             rendererToChange.material.mainTexture = newTexture;
             hasBeenChanged = true;
+            if (disableColliderOnChange)
+                gameObject.GetComponent<BoxCollider>().enabled = false;
             if (logger != null)
             {
                 logger.pushEventLogToSummary("ChangeTextureEvent_ObjectClicked," + name, true);

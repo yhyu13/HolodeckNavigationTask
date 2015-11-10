@@ -36,6 +36,9 @@ public class NavigationTestStateMachine : MonoBehaviour
             float angle = ((float)i / children.Count) * Mathf.PI * 2;
             children[i].transform.position = new Vector3(center.x + radius * Mathf.Sin(angle), center.y, center.z + radius * Mathf.Cos(angle));
         }
+
+        transform.localRotation *= Quaternion.Euler(0.0f, UnityEngine.VR.InputTracking.GetLocalRotation(UnityEngine.VR.VRNode.CenterEye).eulerAngles.y, 0.0f);
+        UnityEngine.VR.InputTracking.Recenter();
     }
 
     
