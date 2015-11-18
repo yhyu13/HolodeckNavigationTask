@@ -11,6 +11,10 @@ public class XInputTestCS : MonoBehaviour
     public Camera lookCamera;
     public float prevTriggerStateRight = 0f;
     public float prevTriggerStateLeft = 0f;
+
+    public bool mouseClickState = false;
+    public bool prevMouseClickState = false;
+
     // Use this for initialization
     void Start()
     {
@@ -40,9 +44,11 @@ public class XInputTestCS : MonoBehaviour
 
         prevState = state;
         state = GamePad.GetState(playerIndex);
+        prevMouseClickState = mouseClickState;
+        mouseClickState = Input.GetMouseButton(0);
 
         // Detect if a button was pressed this frame
-        if (prevState.Buttons.A == ButtonState.Released && state.Buttons.A == ButtonState.Pressed)
+        if ((prevState.Buttons.A == ButtonState.Released && state.Buttons.A == ButtonState.Pressed) || (!prevMouseClickState && mouseClickState)) 
         {
             renderObj.GetComponent<Renderer>().material.color = new Color(Random.value, Random.value, Random.value, 1.0f);
             RaycastHit hit;
