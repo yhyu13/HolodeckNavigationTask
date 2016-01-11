@@ -33,7 +33,7 @@ public class InventoryManager : MonoBehaviour {
                 {
                     if (hit.collider.gameObject.GetComponent<Grabbable>() != null)
                     {
-                        hit.collider.gameObject.transform.parent = transform;
+                        //hit.collider.gameObject.transform.parent = transform;
                         SetMaterial(hit.collider.gameObject.GetComponent<MeshRenderer>().material);
                         hit.collider.gameObject.SetActive(false);
                         holdingObject = true;
@@ -43,7 +43,7 @@ public class InventoryManager : MonoBehaviour {
             }
             else
             {
-                objectBeingHeld.transform.parent = originalParent;
+                //objectBeingHeld.transform.parent = originalParent;
                 objectBeingHeld.transform.position = new Vector3(transform.position.x, objectBeingHeld.transform.position.y, transform.position.z) + (new Vector3(transform.forward.x, 0f, transform.forward.z) * placeDistance);
                 ResetMaterial();
                 objectBeingHeld.SetActive(true);

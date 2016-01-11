@@ -11,8 +11,15 @@ public class XInputTestCS : MonoBehaviour
     public Camera lookCamera;
     public float prevTriggerStateRight = 0f;
     public float prevTriggerStateLeft = 0f;
+<<<<<<< HEAD
     public static string buttonString = "a";
     public bool previousInputState = false;
+=======
+
+    public bool mouseClickState = false;
+    public bool prevMouseClickState = false;
+
+>>>>>>> origin/master
     // Use this for initialization
     void Start()
     {
@@ -42,11 +49,17 @@ public class XInputTestCS : MonoBehaviour
 
         prevState = state;
         state = GamePad.GetState(playerIndex);
+        prevMouseClickState = mouseClickState;
+        mouseClickState = Input.GetMouseButton(0);
 
         bool inputState = Input.GetKey(KeyCode.X) || Input.GetMouseButton(0) || Input.GetButton(buttonString);
         bool risingEdge = inputState && !previousInputState;
         // Detect if a button was pressed this frame
+<<<<<<< HEAD
         if ((prevState.Buttons.A == ButtonState.Released && state.Buttons.A == ButtonState.Pressed) || risingEdge)
+=======
+        if ((prevState.Buttons.A == ButtonState.Released && state.Buttons.A == ButtonState.Pressed) || (!prevMouseClickState && mouseClickState)) 
+>>>>>>> origin/master
         {
             renderObj.GetComponent<Renderer>().material.color = new Color(Random.value, Random.value, Random.value, 1.0f);
             RaycastHit hit;
