@@ -23,7 +23,7 @@ public class NavigationTestStateMachine : MonoBehaviour
     void SetPositionsCenter()
     {
         Vector3 center = new Vector3(27.5f, 6.5f, 37.5f);
-        character.transform.position = center;
+        //character.transform.position = center;
 
         List<GameObject> children = new List<GameObject>();
         foreach (Transform child in itemsRootObject.transform)

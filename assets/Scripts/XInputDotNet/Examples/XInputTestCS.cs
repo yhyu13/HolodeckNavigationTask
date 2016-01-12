@@ -11,15 +11,15 @@ public class XInputTestCS : MonoBehaviour
     public Camera lookCamera;
     public float prevTriggerStateRight = 0f;
     public float prevTriggerStateLeft = 0f;
-<<<<<<< HEAD
+
     public static string buttonString = "a";
     public bool previousInputState = false;
-=======
+
 
     public bool mouseClickState = false;
     public bool prevMouseClickState = false;
 
->>>>>>> origin/master
+
     // Use this for initialization
     void Start()
     {
@@ -55,17 +55,17 @@ public class XInputTestCS : MonoBehaviour
         bool inputState = Input.GetKey(KeyCode.X) || Input.GetMouseButton(0) || Input.GetButton(buttonString);
         bool risingEdge = inputState && !previousInputState;
         // Detect if a button was pressed this frame
-<<<<<<< HEAD
         if ((prevState.Buttons.A == ButtonState.Released && state.Buttons.A == ButtonState.Pressed) || risingEdge)
-=======
-        if ((prevState.Buttons.A == ButtonState.Released && state.Buttons.A == ButtonState.Pressed) || (!prevMouseClickState && mouseClickState)) 
->>>>>>> origin/master
         {
             renderObj.GetComponent<Renderer>().material.color = new Color(Random.value, Random.value, Random.value, 1.0f);
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2f, Screen.height / 2f));
             if (Physics.Raycast(ray, out hit, 2f))
-                hit.collider.gameObject.GetComponent<ChangeTextureOnCollision>().Change();
+                try
+                {
+                    hit.collider.gameObject.GetComponent<ChangeTextureOnCollision>().Change();
+                }
+                catch (System.Exception) { }
         }
         // Detect if a button was released this frame
         if (prevState.Buttons.A == ButtonState.Pressed && state.Buttons.A == ButtonState.Released)

@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class RandomizeStartPosition : MonoBehaviour {
     public Vector3[] possiblePositions;
     public Vector3[] possibleDirections;
     public int[] randomOrder;
     public bool[] clockwise;
-    public string playerPrefsString = "previousRandomPositionIndex";
+    public string playerPrefsString = "previousRandomTestPositionIndex";
     public DoorStateManager doorManager;
     public DoorItemPlayerStateMachine stateMachine;
 
@@ -20,11 +21,12 @@ public class RandomizeStartPosition : MonoBehaviour {
         Vector3 startDirection = possibleDirections[locationIndex];
         this.gameObject.transform.position = startPosition;
         this.gameObject.transform.rotation = Quaternion.Euler(startDirection);
-        stateMachine.directionClockwise = clockwise[locationIndex];
+        
 
         int nextIndex = (locationIndex + 1) % possibleDirections.Length;
         PlayerPrefs.SetInt(playerPrefsString, nextIndex);
 
-        
+        try { stateMachine.directionClockwise = clockwise[locationIndex]; }
+        catch (Exception) { }
 	}
 }

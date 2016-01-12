@@ -171,7 +171,7 @@ public class Logger : MonoBehaviour {
         //Write a timestamp for data stability
         string timestamp = DateTime.Now.ToBinary() + ",";
         if (prependTimestamp)
-            summaryWriter.WriteLine(timestamp + logLine);
+            summaryWriter.WriteLine(timestamp + "\r\n" + logLine);
         else
             summaryWriter.WriteLine(logLine);
     }

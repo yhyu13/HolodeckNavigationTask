@@ -11,10 +11,13 @@ public class ChangeTextureOnCollision : MonoBehaviour {
     public Logger logger;
     private bool changeLatch = false;
     public bool disableColliderOnChange = true;
+    public bool deactivateAfterStart = false;
 	// Use this for initialization
 	void Start () {
 	    if(rendererToChange != null)
             rendererToChange.material.mainTexture = startTexture;
+        if (deactivateAfterStart)
+            this.gameObject.SetActive(false);
 	}
 	
 	// Update is called once per frame
