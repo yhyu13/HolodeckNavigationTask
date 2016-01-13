@@ -27,6 +27,8 @@ public class HoldAllInventoryManager : MonoBehaviour
 
     public Logger logger;
 
+    public bool randomizeStartOrder = true;
+
     // Use this for initialization
     void Start()
     {
@@ -38,8 +40,25 @@ public class HoldAllInventoryManager : MonoBehaviour
             objects[i] = ItemsObject.transform.GetChild(i).gameObject;
             heldObjectIndicies.Add(i);
         }
+        if (randomizeStartOrder)
+            ShuffleHeldObjects();
         displayObjectRenderer = displayObject.GetComponent<MeshRenderer>();
         DisplayItemAtIndex(0);
+    }
+
+    private System.Random rng = new System.Random();
+
+    private void ShuffleHeldObjects()
+    {
+        int n = heldObjectIndicies.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = rng.Next(n + 1);
+            int value = heldObjectIndicies[k];
+            heldObjectIndicies[k] = heldObjectIndicies[n];
+            heldObjectIndicies[n] = value;
+        }
     }
 
     void Update()
