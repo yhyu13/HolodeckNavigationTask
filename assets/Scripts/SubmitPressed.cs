@@ -2,10 +2,10 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.VR;
+using UnityEngine.SceneManagement;
 
 public class SubmitPressed : MonoBehaviour {
-    public int newSceneNumberFlat = 1;
-    public int newSceneNumberNotFlat = 2;
+    public int newSceneNumber;
     public string sliderPlayerPrefsValue = "taskTime";
     public string subjectIDPlayerPrefsValue = "subjectID";
     public Slider slider;
@@ -27,9 +27,7 @@ public class SubmitPressed : MonoBehaviour {
         if (subjectID != null)
             PlayerPrefs.SetString(subjectIDPlayerPrefsValue, subjectID.text);
         VRSettings.enabled = true;
-        if(flatToggle.isOn)
-            Application.LoadLevel(newSceneNumberFlat);
-        else
-            Application.LoadLevel(newSceneNumberNotFlat);
+        Debug.Log("Loading scene " + newSceneNumber);
+        SceneManager.LoadScene(newSceneNumber);
     }
 }

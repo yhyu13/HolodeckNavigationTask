@@ -5,34 +5,55 @@ public class XInputTestCS : MonoBehaviour
 {
     bool playerIndexSet = false;
     PlayerIndex playerIndex;
-    GamePadState state;
-    GamePadState prevState;
-    public GameObject renderObj;
+
+    GamePadState gamePadState;
+    GamePadState prevGamePadState;
+
+    public GameObject pointerRenderObject;
     public Camera lookCamera;
+
+    private float ClickDistance = 2f;
+    private float DefaultLookAngle = 0f;
+
+    private float HeadHeight = 0.9f;
+
+    public static string selectButtonString = "a";
+    public static int selectMouseButtonInt = 0;
+    public static KeyCode selectKeyboardButtonKeyCode = KeyCode.X;
+    public static string rotationButtonKeyString = "r";
+
     public float prevTriggerStateRight = 0f;
     public float prevTriggerStateLeft = 0f;
-
-    public static string buttonString = "a";
+    private bool prevRotationButtonState = false;
     public bool previousInputState = false;
-
-
-    public bool mouseClickState = false;
     public bool prevMouseClickState = false;
-
 
     // Use this for initialization
     void Start()
     {
         lookCamera.transform.localRotation = Quaternion.identity;
         UnityEngine.VR.InputTracking.Recenter();
+        ClickDistance = PlayerPrefs.GetFloat("ClickDistance", 2f);
+        DefaultLookAngle = PlayerPrefs.GetFloat("DefaultLookAngle", 0f);
+
+        Debug.Log("Setting click distance to " + ClickDistance);
     }
 
+    private bool first = true;
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
+        if (first)
+        {
+            Debug.Log("Setting rotation to " + DefaultLookAngle);
+            lookCamera.transform.parent.position = new Vector3(transform.position.x, transform.position.y + HeadHeight, transform.position.z);
+            lookCamera.transform.parent.rotation = transform.rotation;
+            lookCamera.transform.Rotate(DefaultLookAngle, 0f, 0f);
+            first = false;
+        }
         // Find a PlayerIndex, for a single player game
         // Will find the first controller that is connected ans use it
-        if (!playerIndexSet || !prevState.IsConnected)
+        if (!playerIndexSet || !prevGamePadState.IsConnected)
         {
             for (int i = 0; i < 4; ++i)
             {
@@ -47,20 +68,19 @@ public class XInputTestCS : MonoBehaviour
             }
         }
 
-        prevState = state;
-        state = GamePad.GetState(playerIndex);
-        prevMouseClickState = mouseClickState;
-        mouseClickState = Input.GetMouseButton(0);
+        gamePadState = GamePad.GetState(playerIndex);
+        bool mouseClickState = Input.GetMouseButton(selectMouseButtonInt);
 
-        bool inputState = Input.GetKey(KeyCode.X) || Input.GetMouseButton(0) || Input.GetButton(buttonString);
+        bool inputState = Input.GetKey(selectKeyboardButtonKeyCode) || mouseClickState || Input.GetButton(selectButtonString);
         bool risingEdge = inputState && !previousInputState;
+        bool fallingEdge = !inputState && previousInputState;
         // Detect if a button was pressed this frame
-        if ((prevState.Buttons.A == ButtonState.Released && state.Buttons.A == ButtonState.Pressed) || risingEdge)
+        if ((prevGamePadState.Buttons.A == ButtonState.Released && gamePadState.Buttons.A == ButtonState.Pressed) || risingEdge)
         {
-            renderObj.GetComponent<Renderer>().material.color = new Color(Random.value, Random.value, Random.value, 1.0f);
+            pointerRenderObject.GetComponent<Renderer>().material.color = Color.black;
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2f, Screen.height / 2f));
-            if (Physics.Raycast(ray, out hit, 2f))
+            if (Physics.Raycast(ray, out hit, ClickDistance))
                 try
                 {
                     hit.collider.gameObject.GetComponent<ChangeTextureOnCollision>().Change();
@@ -68,38 +88,29 @@ public class XInputTestCS : MonoBehaviour
                 catch (System.Exception) { }
         }
         // Detect if a button was released this frame
-        if (prevState.Buttons.A == ButtonState.Pressed && state.Buttons.A == ButtonState.Released)
+        if (prevGamePadState.Buttons.A == ButtonState.Pressed && gamePadState.Buttons.A == ButtonState.Released || fallingEdge)
+            pointerRenderObject.GetComponent<Renderer>().material.color = Color.white;
+
+        //TODO: Fix the below to remove bounce and stutter issue
+        // Set vibration according to triggers
+        GamePad.SetVibration(playerIndex, gamePadState.Triggers.Left, gamePadState.Triggers.Right);
+        float trigStateRight = gamePadState.Triggers.Right;
+        float trigStateLeft = gamePadState.Triggers.Left;
+        bool rotationButtonState = Input.GetKey(rotationButtonKeyString);
+        bool changeOnRisingEdge = true;
+        if ((changeOnRisingEdge && trigStateRight > 0 && prevTriggerStateRight == 0) || (!changeOnRisingEdge && trigStateRight > 0) || (changeOnRisingEdge && rotationButtonState && !prevRotationButtonState))
         {
-            renderObj.GetComponent<Renderer>().material.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+            float rotationY = UnityEngine.VR.InputTracking.GetLocalRotation(UnityEngine.VR.VRNode.CenterEye).eulerAngles.y;
+            transform.rotation = Quaternion.Euler(new Vector3(0f, lookCamera.transform.rotation.eulerAngles.y, 0f));   
         }
 
-        // Set vibration according to triggers
-        GamePad.SetVibration(playerIndex, state.Triggers.Left, state.Triggers.Right);
-        float trigStateRight = state.Triggers.Right;
-        float trigStateLeft = state.Triggers.Left;
-        bool changeOnRisingEdge = true;
-        if ((changeOnRisingEdge && trigStateRight > 0 && prevTriggerStateRight == 0) || (!changeOnRisingEdge && trigStateRight > 0))
-        {
-            // Make the current object turn
-            //transform.localRotation *= Quaternion.Euler(0.0f, state.ThumbSticks.Right.X * 150.0f * Time.deltaTime, 0.0f);
-            float rotationY = UnityEngine.VR.InputTracking.GetLocalRotation(UnityEngine.VR.VRNode.CenterEye).eulerAngles.y;
-            if (!changeOnRisingEdge)
-            {
-                if (rotationY < 180)
-                    rotationY /= 2;
-                else
-                    rotationY = 360 - ((360 - rotationY) / 2);
-            }
-            transform.localRotation *= Quaternion.Euler(0.0f, rotationY, 0.0f);
-            UnityEngine.VR.InputTracking.Recenter();
-            
-        }
-        if (trigStateLeft > 0 && prevTriggerStateLeft == 0)
-        {
-            lookCamera.transform.localRotation = Quaternion.identity;
-            UnityEngine.VR.InputTracking.Recenter();
-        }
+        lookCamera.transform.parent.position = new Vector3(transform.position.x, transform.position.y + HeadHeight, transform.position.z);
+
         prevTriggerStateLeft = trigStateLeft;
         prevTriggerStateRight = trigStateRight;
+        prevRotationButtonState = rotationButtonState;
+        prevMouseClickState = mouseClickState;
+        prevGamePadState = gamePadState;
+        previousInputState = inputState;
     }
 }

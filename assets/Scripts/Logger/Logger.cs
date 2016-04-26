@@ -6,12 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
+using UnityEngine.SceneManagement;
 
 public class Logger : MonoBehaviour {
 
 	private ILoggable[] loggableObjects; //This collection contains objects whose state should be logged on Update
 	private const string dateTimeFormat = "HH_mm_ss_dd-MM-yyyy"; //This string represents the DateTime output format for the filename
     private const string subfolderName = "Logged_Data";
+    public string trialTypeFolderName = "Practice";
 	private StreamWriter rawWriter = null; //This writer is used to write to file
 	private StreamWriter summaryWriter = null;
 	private string currentFileTimestamp = "";
@@ -74,8 +76,9 @@ public class Logger : MonoBehaviour {
 
 	public void BeginLogging(){
         subID = PlayerPrefs.GetString("subjectID");
-        string dir1 = Application.dataPath.Replace('/', '\\') + "\\" + subfolderName + "\\" + subID + "\\";
+        string dir1 = Application.dataPath.Replace('/', '\\') + "\\" + subfolderName + "\\" + trialTypeFolderName + "\\" + subID + "\\";
         Directory.CreateDirectory(dir1);
+
 
 		string substring = ("Sub" + subID);
 
@@ -178,6 +181,22 @@ public class Logger : MonoBehaviour {
 
     void Start()
     {
+        int lvl = SceneManager.GetActiveScene().buildIndex;
+        switch (lvl)
+        {
+            case 1:
+                trialTypeFolderName = "Test";
+                break;
+            case 2:
+                trialTypeFolderName = "Study";
+                break;
+            case 3:
+                trialTypeFolderName = "Practice";
+                break;
+            default:
+                trialTypeFolderName = "None";
+                break;
+        }
         if (beginAutomatically)
             BeginLogging();
     }
