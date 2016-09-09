@@ -15,7 +15,8 @@ public class RandomizeStartPosition : MonoBehaviour {
 	void Start () {
         if (!PlayerPrefs.HasKey(playerPrefsString))
             PlayerPrefs.SetInt(playerPrefsString, 0);
-
+        if(PlayerPrefs.GetInt(playerPrefsString) >= randomOrder.Length)
+            PlayerPrefs.SetInt(playerPrefsString, 0);
         int locationIndex = randomOrder[PlayerPrefs.GetInt(playerPrefsString)];
         Vector3 startPosition = possiblePositions[locationIndex];
         Vector3 startDirection = possibleDirections[locationIndex];

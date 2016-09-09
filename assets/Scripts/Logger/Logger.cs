@@ -75,8 +75,8 @@ public class Logger : MonoBehaviour {
 	}
 
 	public void BeginLogging(){
-        subID = PlayerPrefs.GetString("subjectID");
-        string dir1 = Application.dataPath.Replace('/', '\\') + "\\" + subfolderName + "\\" + trialTypeFolderName + "\\" + subID + "\\";
+        subID = PlayerPrefs.GetString("subjectID").Trim();
+        string dir1 = Application.dataPath.Replace('/', '\\') + "\\" + subfolderName.Trim() + "\\" + trialTypeFolderName.Trim() + "\\" + subID + "\\";
         Directory.CreateDirectory(dir1);
 
 
