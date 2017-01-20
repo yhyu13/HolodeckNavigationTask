@@ -25,9 +25,12 @@ public class SubmitPressed : MonoBehaviour {
         if (slider != null)
             PlayerPrefs.SetFloat(sliderPlayerPrefsValue, slider.value);
         if (subjectID != null)
-            PlayerPrefs.SetString(subjectIDPlayerPrefsValue, subjectID.text);
-        VRSettings.enabled = true;
-        Debug.Log("Loading scene " + newSceneNumber);
-        SceneManager.LoadScene(newSceneNumber);
+            if (subjectID.text.Trim() != "")
+            {
+                PlayerPrefs.SetString(subjectIDPlayerPrefsValue, subjectID.text.Trim());
+                VRSettings.enabled = true;
+                Debug.Log("Loading scene " + newSceneNumber);
+                SceneManager.LoadScene(newSceneNumber);
+            }
     }
 }

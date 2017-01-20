@@ -76,7 +76,7 @@ public class Logger : MonoBehaviour {
 
 	public void BeginLogging(){
         subID = PlayerPrefs.GetString("subjectID").Trim();
-        string dir1 = Application.dataPath.Replace('/', '\\') + "\\" + subfolderName.Trim() + "\\" + trialTypeFolderName.Trim() + "\\" + subID + "\\";
+        string dir1 = Application.dataPath.Replace('/', '\\') + "\\" + subfolderName.Trim() + "\\" + trialTypeFolderName.Trim() + "\\" + subID.Trim() + "\\";
         Directory.CreateDirectory(dir1);
 
 
@@ -192,6 +192,15 @@ public class Logger : MonoBehaviour {
                 break;
             case 3:
                 trialTypeFolderName = "Practice";
+                break;
+            case 4: 
+                trialTypeFolderName = "Test2Room";
+                break;
+            case 5: 
+                trialTypeFolderName = "Study2Room";
+                break;
+            case 6:
+                trialTypeFolderName = "Practice2Room";
                 break;
             default:
                 trialTypeFolderName = "None";
