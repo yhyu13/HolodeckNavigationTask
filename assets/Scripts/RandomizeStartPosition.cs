@@ -12,7 +12,7 @@ public class RandomizeStartPosition : MonoBehaviour {
     public DoorItemPlayerStateMachine stateMachine;
 
 	// Use this for initialization
-	void Start () {
+	public void Start () {
         if (!PlayerPrefs.HasKey(playerPrefsString))
             PlayerPrefs.SetInt(playerPrefsString, 0);
         if(PlayerPrefs.GetInt(playerPrefsString) >= randomOrder.Length)
@@ -30,4 +30,23 @@ public class RandomizeStartPosition : MonoBehaviour {
         try { stateMachine.directionClockwise = clockwise[locationIndex]; }
         catch (Exception) { }
 	}
+
+    public Vector3[] getNextPositionRotation()
+    {
+        if (!PlayerPrefs.HasKey(playerPrefsString))
+            PlayerPrefs.SetInt(playerPrefsString, 0);
+        if (PlayerPrefs.GetInt(playerPrefsString) >= randomOrder.Length)
+            PlayerPrefs.SetInt(playerPrefsString, 0);
+        int locationIndex = randomOrder[PlayerPrefs.GetInt(playerPrefsString)];
+        Vector3 startPosition = possiblePositions[locationIndex];
+        Vector3 startDirection = possibleDirections[locationIndex];
+
+        int nextIndex = (locationIndex + 1) % possibleDirections.Length;
+        PlayerPrefs.SetInt(playerPrefsString, nextIndex);
+
+        try { stateMachine.directionClockwise = clockwise[locationIndex]; }
+        catch (Exception) { }
+
+        return new Vector3[] { startPosition, startDirection };
+    }
 }

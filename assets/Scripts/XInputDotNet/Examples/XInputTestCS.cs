@@ -93,7 +93,7 @@ public class XInputTestCS : MonoBehaviour
 
         //TODO: Fix the below to remove bounce and stutter issue
         // Set vibration according to triggers
-        GamePad.SetVibration(playerIndex, gamePadState.Triggers.Left, gamePadState.Triggers.Right);
+        //GamePad.SetVibration(playerIndex, gamePadState.Triggers.Left, gamePadState.Triggers.Right);
         float trigStateRight = gamePadState.Triggers.Right;
         float trigStateLeft = gamePadState.Triggers.Left;
         bool rotationButtonState = Input.GetKey(rotationButtonKeyString);

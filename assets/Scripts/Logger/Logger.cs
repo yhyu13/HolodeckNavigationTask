@@ -7,6 +7,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine.SceneManagement;
+using UnityEngine.VR;
 
 public class Logger : MonoBehaviour {
 
@@ -91,7 +92,8 @@ public class Logger : MonoBehaviour {
         Debug.LogWarning(rawFilename);
 		currentFileTimestamp = DateTime.Now.ToString (dateTimeFormat);
 		rawFilename = appendTextToFilename (rawFilename,substring);
-		rawFilename = appendTextToFilename (rawFilename,currentFileTimestamp);
+        rawFilename = appendTextToFilename(rawFilename, "Trial" + PlayerPrefs.GetInt("trial"));
+        rawFilename = appendTextToFilename (rawFilename,currentFileTimestamp);
 		
 		//Create the file writer
 		rawWriter = new StreamWriter (rawFilename, false);
@@ -100,7 +102,8 @@ public class Logger : MonoBehaviour {
 		//Create the appropriate filename given the options
         string summaryFilename = dir1 + "SummaryLog.csv";
 		summaryFilename = appendTextToFilename (summaryFilename,substring);
-		summaryFilename = appendTextToFilename (summaryFilename,currentFileTimestamp);
+        summaryFilename = appendTextToFilename(summaryFilename, "Trial" + PlayerPrefs.GetInt("trial"));
+        summaryFilename = appendTextToFilename (summaryFilename,currentFileTimestamp);
 
 		//Create the file writer
 		summaryWriter = new StreamWriter (summaryFilename);
@@ -131,7 +134,8 @@ public class Logger : MonoBehaviour {
 	public void Finish(){
 		rawWriter.WriteLine ("End of File");
 		rawWriter.Close ();
-		summaryWriter.Close ();
+        summaryWriter.WriteLine("End of File");
+        summaryWriter.Close ();
 	}
 
 	//When quitting, attempt to close the streams
@@ -167,6 +171,7 @@ public class Logger : MonoBehaviour {
             rawWriter.WriteLine(timestamp + "\r\n" + logLine);
         else
             rawWriter.WriteLine(logLine);
+        rawWriter.Flush();
     }
 
     public void pushEventLogToSummary(string logLine, bool prependTimestamp)
@@ -177,6 +182,7 @@ public class Logger : MonoBehaviour {
             summaryWriter.WriteLine(timestamp + "\r\n" + logLine);
         else
             summaryWriter.WriteLine(logLine);
+        summaryWriter.Flush();
     }
 
     void Start()
@@ -185,27 +191,31 @@ public class Logger : MonoBehaviour {
         switch (lvl)
         {
             case 1:
-                trialTypeFolderName = "Test";
+                trialTypeFolderName = "4RoomPractice";
                 break;
             case 2:
-                trialTypeFolderName = "Study";
+                trialTypeFolderName = "4RoomStudy";
                 break;
             case 3:
-                trialTypeFolderName = "Practice";
+                trialTypeFolderName = "4RoomTest";
                 break;
             case 4: 
-                trialTypeFolderName = "Test2Room";
+                trialTypeFolderName = "2RoomPractice";
                 break;
             case 5: 
-                trialTypeFolderName = "Study2Room";
+                trialTypeFolderName = "2RoomStudy";
                 break;
             case 6:
-                trialTypeFolderName = "Practice2Room";
+                trialTypeFolderName = "2RoomTestAnonymous";
+                break;
+            case 7:
+                trialTypeFolderName = "2RoomTest";
                 break;
             default:
                 trialTypeFolderName = "None";
                 break;
         }
+        trialTypeFolderName += (VRSettings.enabled ? "VR" : "");
         if (beginAutomatically)
             BeginLogging();
     }
